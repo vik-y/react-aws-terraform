@@ -1,70 +1,38 @@
-# Getting Started with Create React App
+# Deploying Static React Application on AWS using Terraform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project demonstrates how to deploy a simple React application to AWS using Terraform. The application is a basic "Hello World" example, showcasing the integration of AWS services like S3 and CloudFront for hosting static web applications.
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+- `src/`: Contains the React application source files.
+- `build/`: Build directory generated after running `npm run build`.
+- `terraform/`: Contains Terraform files for AWS deployment.
+- `NOTES.md`: Additional notes about the project.
+- `README.md`: Documentation for the project.
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js and npm
+- AWS CLI configured with necessary permissions
+- Terraform
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Setup and Deployment
 
-### `npm test`
+1. **Install Dependencies**: Run `npm install` in the project directory.
+2. **Build the React App**: Execute `npm run build` to create a build directory.
+3. **Initialize Terraform**: Navigate to the `terraform/` directory and run `terraform init`.
+4. **Apply Terraform Plan**: Execute `terraform apply` to deploy resources on AWS.
+5. **Upload Build to S3**: Use the AWS CLI to upload the contents of the `build/` directory to the S3 bucket.
+```
+aws s3 cp build s3://<bucket_name> --recursive --acl public-read
+```
+6. **Access Application**: The application should now be accessible via the CloudFront URL.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Contributing
 
-### `npm run build`
+Feel free to fork this repository and submit pull requests for any improvements or fixes.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## License
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+This project is open-sourced under the MIT License.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
