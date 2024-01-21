@@ -2,7 +2,14 @@
 
 This project demonstrates how to deploy a simple React application to AWS using Terraform. The application is a basic "Hello World" example, showcasing the integration of AWS services like S3 and CloudFront for hosting static web applications.
 
-![Loom Demo](https://www.loom.com/embed/6d6c154d5b64448ab5739fb85ee3de19?sid=16a61a1d-da27-4516-87bc-93ef1f532bb3)
+<div>
+    <a href="https://www.loom.com/share/6d6c154d5b64448ab5739fb85ee3de19">
+      <p>Demo: React App Deployment on AWS with terraform</p>
+    </a>
+    <a href="https://www.loom.com/share/6d6c154d5b64448ab5739fb85ee3de19">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/6d6c154d5b64448ab5739fb85ee3de19-with-play.gif">
+    </a>
+</div>
 
 ## Project Structure
 
