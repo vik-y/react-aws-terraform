@@ -11,12 +11,10 @@ module "s3_bucket" {
 
   control_object_ownership = true
   object_ownership         = "BucketOwnerPreferred"
-  
-  # These configurations are needed if you want the file content to be public
-  block_public_acls        = false
-  block_public_policy      = false
-  ignore_public_acls       = false
-  restrict_public_buckets  = false
+
+  # allow cloudfront access to the bucket
+  attach_policy = true
+  policy        = data.aws_iam_policy_document.s3_bucket_policy.json
 
   website = {
     index_document = "index.html"
@@ -24,14 +22,36 @@ module "s3_bucket" {
   }
 }
 
+# Policy to be attached to the S3 bucket to allow CloudFront access
+data "aws_iam_policy_document" "s3_bucket_policy" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["${module.s3_bucket.s3_bucket_arn}/*"]
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [module.cloudfront.cloudfront_distribution_arn]
+    }
+  }
+}
+
+
+
 module "cloudfront" {
   source  = "terraform-aws-modules/cloudfront/aws"
   version = "~> 3.2.0"
 
-  origin = [{
-    domain_name = module.s3_bucket.s3_bucket_bucket_regional_domain_name
-    origin_id = var.bucket_name
-  }]
+  origin = {
+    s3 = {
+      domain_name = module.s3_bucket.s3_bucket_bucket_regional_domain_name
+      origin_id   = var.bucket_name
+      origin_access_control = "s3" 
+    }
+  }
 
 
   enabled             = true
@@ -39,6 +59,18 @@ module "cloudfront" {
   comment             = "CloudFront Distribution pointing to ${var.bucket_name}"
   default_root_object = var.cloudfront_default_root_object
   price_class         = var.cloudfront_price_class
+  create_origin_access_control = true
+
+  origin_access_control = {
+    s3 = {
+      description      = "CloudFront access to S3"
+      origin_type      = "s3"
+      signing_behavior = "always"
+      signing_protocol = "sigv4"
+    }
+  }
+
+
 
   default_cache_behavior = {
     allowed_methods  = ["GET", "HEAD"]
@@ -46,7 +78,7 @@ module "cloudfront" {
     target_origin_id = var.bucket_name
     forwarded_values = {
       query_string = false
-      cookies      = {
+      cookies = {
         forward = "none"
       }
     }
