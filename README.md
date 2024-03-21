@@ -27,6 +27,17 @@ This project demonstrates how to deploy a simple React application to AWS using 
 
 ## Setup and Deployment
 
+Before running the terraform code ensure you remove the terraform block from s3.tf to avoid using remote state.
+```
+terraform {
+  backend "s3" {
+    bucket = "kubernetes-takemetoprod"  # Your S3 bucket name
+    key    = "react-aws-terraform-tf-state/terraform.tfstate"  # Path to the state file
+    region = "us-east-1"  # Your AWS region
+  }
+}
+```
+
 1. **Install Dependencies**: Run `npm install` in the project directory.
 2. **Build the React App**: Execute `npm run build` to create a build directory.
 3. **Initialize Terraform**: Navigate to the `terraform/` directory and run `terraform init`.
