@@ -1,0 +1,66 @@
+name: 'Terraform Plan and Deploy with Approval'
+
+on:
+  push:
+    branches:
+    - main  
+
+jobs:
+  plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.7.5
+
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./terraform
+
+    - name: Terraform Plan
+      run: |
+        terraform plan -out=tfplan
+        terraform show -no-color tfplan > plan.txt
+      id: plan
+      working-directory: ./terraform
+
+    - name: Upload Terraform Plan
+      uses: actions/upload-artifact@v2
+      with:
+        name: terraform-plan
+        path: ./terraform/plan.txt
+      
+
+  apply:
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: 
+      name: "production"  # Environment requiring approval
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.7.5
+
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./terraform
+
+    - name: Download Terraform Plan
+      uses: actions/download-artifact@v2
+      with:
+        name: terraform-plan
+        path: ./terraform
+
+    - name: Terraform Apply
+      run: terraform apply "tfplan"
+      working-directory: ./terraform
