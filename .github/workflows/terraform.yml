@@ -66,6 +66,13 @@ jobs:
       with:
         name: terraform-plan
         path: ./terraform
+    
+    - name: List Files in terraform directory
+      run: ls -R
+      working-directory: ./terraform
+    
+    - name: Fix plan file name if needed
+      run: mv ./terraform/plan.txt ./terraform/tfplan || true
 
     - name: Terraform Apply
       run: terraform apply "tfplan"
